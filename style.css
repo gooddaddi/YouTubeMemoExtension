@@ -4,10 +4,10 @@ body {
   font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   padding: 0;
   margin: 0;
-  background-color: #f8f9fa;
-  /* Softer off-white */
-  color: #343a40;
-  /* Dark gray for text */
+  background-color: #121212;
+  /* Dark Charcoal Background */
+  color: #e0e0e0;
+  /* Light text for readability */
 }
 
 /* Container grows with content, no fixed height */
@@ -17,14 +17,15 @@ body {
 }
 
 header {
-  background-color: #2c3e50;
-  /* Dark Navy - Professional & Easy on eyes */
+  background-color: #1a1a1a;
+  /* Even darker header */
   color: white;
   padding: 12px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid #333;
 }
 
 header h1 {
@@ -75,13 +76,17 @@ main {
 
 /* Add View Styles */
 .card {
-  background: white;
+  background: #1e1e1e;
+  /* Darker card background */
   padding: 15px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   margin-bottom: 20px;
-  border-left: 4px solid #3498db;
-  /* Accent border */
+  border-left: 4px solid #ff4757;
+  /* Vibrant accent red */
+  border-top: 1px solid #333;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #333;
 }
 
 #video-title {
@@ -91,7 +96,7 @@ main {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #2c3e50;
+  color: #fff;
 }
 
 .url-display {
@@ -108,12 +113,12 @@ main {
 
 label {
   display: block;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   margin-bottom: 6px;
-  color: #555;
+  color: #999;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
 }
 
 .row {
@@ -126,20 +131,23 @@ input,
 textarea {
   width: 100%;
   padding: 10px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #333;
   border-radius: 6px;
   box-sizing: border-box;
   font-family: inherit;
   font-size: 13px;
-  background-color: #fff;
-  transition: border-color 0.2s;
+  background-color: #252525;
+  /* Dark input background */
+  color: #fff;
+  transition: all 0.2s;
 }
 
 select:focus,
 input:focus,
 textarea:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #ff4757;
+  background-color: #2a2a2a;
 }
 
 textarea {
@@ -160,16 +168,16 @@ button {
   width: 38px;
   padding: 0;
   font-size: 20px;
-  color: #3498db;
-  background: white;
-  border: 1px solid #e0e0e0;
+  color: #ff4757;
+  background: #252525;
+  border: 1px solid #333;
   border-radius: 6px;
   font-weight: bold;
 }
 
 #btn-add-category:hover {
-  background-color: #f7f9fc;
-  border-color: #3498db;
+  background-color: #2a2a2a;
+  border-color: #ff4757;
 }
 
 #new-category-group {
@@ -199,8 +207,8 @@ button {
 
 .primary-btn {
   width: 100%;
-  background-color: #3498db;
-  /* Soft Blue */
+  background-color: #ff4757;
+  /* Vivid YouTube Red */
   color: white;
   border: none;
   padding: 12px;
@@ -208,11 +216,11 @@ button {
   font-weight: 600;
   font-size: 14px;
   transition: background-color 0.2s;
-  box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+  box-shadow: 0 4px 6px rgba(255, 71, 87, 0.2);
 }
 
 .primary-btn:hover {
-  background-color: #2980b9;
+  background-color: #ff6b81;
 }
 
 .primary-btn:disabled {
@@ -242,10 +250,10 @@ button {
   display: flex;
   gap: 10px;
   margin-bottom: 15px;
-  background: #fff;
+  background: #1e1e1e;
   padding: 10px;
   border-radius: 8px;
-  border: 1px solid #eee;
+  border: 1px solid #333;
 }
 
 .controls select {
@@ -254,12 +262,12 @@ button {
   border: none;
   background: transparent;
   font-weight: 600;
-  color: #555;
+  color: #ccc;
   cursor: pointer;
 }
 
 .controls select:hover {
-  color: #3498db;
+  color: #ff4757;
 }
 
 #memo-list {
@@ -269,18 +277,41 @@ button {
 }
 
 .memo-item {
-  background: white;
+  position: relative;
+  background-color: #1e1e1e;
+  background-size: cover;
+  background-position: center;
   border-radius: 8px;
-  padding: 15px;
+  padding: 0;
+  /* Changed to 0 to accommodate the overlay */
   margin-bottom: 15px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
-  border: 1px solid #eee;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid #333;
   transition: transform 0.1s, box-shadow 0.1s;
+  overflow: hidden;
+  /* Ensure overlay doesn't spill out */
+}
+
+.memo-item-content {
+  position: relative;
+  z-index: 2;
+  padding: 15px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%);
+  /* Darker gradient for vivid thumbnails */
+  height: 100%;
+  transition: background 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.memo-item:hover .memo-item-content {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
+  /* Lighter on hover to show more thumbnail */
 }
 
 .memo-item:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .memo-header {
@@ -294,40 +325,45 @@ button {
   font-size: 10px;
   text-transform: uppercase;
   font-weight: 700;
-  background: #eef2f7;
-  color: #34495e;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
   padding: 3px 8px;
   border-radius: 4px;
+  backdrop-filter: blur(4px);
 }
 
 .memo-date {
   font-size: 11px;
-  color: #95a5a6;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .memo-title {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   margin-bottom: 8px;
   display: block;
   text-decoration: none;
-  color: #2c3e50;
+  color: #fff;
   line-height: 1.4;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 1px rgba(0, 0, 0, 1);
 }
 
 .memo-title:hover {
-  color: #3498db;
+  color: #ff4757;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 1);
 }
 
 .memo-text {
   font-size: 13px;
-  color: #555;
+  color: #fff;
   white-space: pre-wrap;
   line-height: 1.5;
-  background: #fafafa;
+  background: rgba(0, 0, 0, 0.3);
   padding: 8px;
   border-radius: 4px;
-  border-left: 2px solid #ddd;
+  border-left: 3px solid #ff4757;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .memo-actions {

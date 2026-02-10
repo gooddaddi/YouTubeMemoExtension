@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabList = document.getElementById('tab-list');
     const viewAdd = document.getElementById('view-add');
     const viewList = document.getElementById('view-list');
-    
+
     const videoTitle = document.getElementById('video-title');
     const videoUrl = document.getElementById('video-url');
     const categorySelect = document.getElementById('category-select');
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialization
     loadCategories();
     getCurrentTab();
-    
+
     // Tab Switching
     tabAdd.addEventListener('click', () => {
         switchTab('add');
@@ -58,10 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Get current tab info
     function getCurrentTab() {
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             if (tabs.length === 0) return;
             const tab = tabs[0];
-            
+
             if (tab.url && tab.url.includes('youtube.com/watch')) {
                 currentVideo = {
                     title: tab.title.replace(' - YouTube', ''),
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 categories = result.categories;
             } else {
                 // Save defaults if not exists
-                chrome.storage.local.set({categories: categories});
+                chrome.storage.local.set({ categories: categories });
             }
             populateCategoryDropdowns();
         });
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const newCat = newCategoryInput.value.trim();
         if (newCat && !categories.includes(newCat)) {
             categories.push(newCat);
-            chrome.storage.local.set({categories: categories}, () => {
+            chrome.storage.local.set({ categories: categories }, () => {
                 populateCategoryDropdowns();
                 categorySelect.value = newCat; // Select new category
                 newCategoryGroup.classList.add('hidden');
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chrome.storage.local.get(['memos'], (result) => {
             const memos = result.memos || [];
             memos.push(memoData);
-            chrome.storage.local.set({memos: memos}, () => {
+            chrome.storage.local.set({ memos: memos }, () => {
                 showStatus('Memo saved successfully!', 'success');
                 memoInput.value = ''; // Clear input
                 setTimeout(() => { statusMsg.textContent = ''; }, 2000);
@@ -215,15 +215,24 @@ document.addEventListener('DOMContentLoaded', () => {
             filtered.forEach(memo => {
                 const li = document.createElement('li');
                 li.className = 'memo-item';
+
+                // Set thumbnail background if videoId exists
+                if (memo.videoId && memo.videoId !== 'unknown') {
+                    const thumbUrl = `https://img.youtube.com/vi/${memo.videoId}/mqdefault.jpg`;
+                    li.style.backgroundImage = `url(${thumbUrl})`;
+                }
+
                 li.innerHTML = `
-                    <div class="memo-header">
-                        <span class="memo-category">${escapeHtml(memo.category)}</span>
-                        <span class="memo-date">${new Date(memo.timestamp).toLocaleDateString()}</span>
-                    </div>
-                    <a href="${memo.url}" target="_blank" class="memo-title" title="${escapeHtml(memo.title)}">${escapeHtml(memo.title)}</a>
-                    <div class="memo-text">${escapeHtml(memo.memo)}</div>
-                    <div class="memo-actions">
-                         <button class="btn-small btn-delete" data-id="${memo.id}">Delete</button>
+                    <div class="memo-item-content">
+                        <div class="memo-header">
+                            <span class="memo-category">${escapeHtml(memo.category)}</span>
+                            <span class="memo-date">${new Date(memo.timestamp).toLocaleDateString()}</span>
+                        </div>
+                        <a href="${memo.url}" target="_blank" class="memo-title" title="${escapeHtml(memo.title)}">${escapeHtml(memo.title)}</a>
+                        <div class="memo-text">${escapeHtml(memo.memo)}</div>
+                        <div class="memo-actions">
+                             <button class="btn-small btn-delete" data-id="${memo.id}">Delete</button>
+                        </div>
                     </div>
                 `;
                 memoList.appendChild(li);
@@ -245,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chrome.storage.local.get(['memos'], (result) => {
             let memos = result.memos || [];
             memos = memos.filter(m => m.id !== id);
-            chrome.storage.local.set({memos: memos}, () => {
+            chrome.storage.local.set({ memos: memos }, () => {
                 loadMemos(); // Re-render
             });
         });
