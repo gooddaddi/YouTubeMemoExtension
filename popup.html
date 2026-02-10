@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Memo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>YT Memo</h1>
+      <nav>
+        <button id="tab-add" class="active">Add Memo</button>
+        <button id="tab-list">My List</button>
+      </nav>
+    </header>
+
+    <!-- Add Memo Section -->
+    <main id="view-add">
+      <div id="video-info" class="card">
+        <h2 id="video-title">Loading title...</h2>
+        <div class="url-display" id="video-url"></div>
+      </div>
+      
+      <div class="form-group">
+        <label for="category-select">Category</label>
+        <div class="row">
+          <select id="category-select">
+            <option value="General">General</option>
+            <!-- Categories will be populated here -->
+          </select>
+          <button id="btn-add-category" title="Add New Category">+</button>
+        </div>
+      </div>
+
+      <div class="form-group hidden" id="new-category-group">
+        <input type="text" id="new-category-input" placeholder="New Category Name">
+        <button id="btn-save-category">Save</button>
+        <button id="btn-cancel-category">Cancel</button>
+      </div>
+
+      <div class="form-group">
+        <label for="memo-input">Memo</label>
+        <textarea id="memo-input" rows="4" placeholder="Enter your notes here..."></textarea>
+      </div>
+
+      <button id="btn-save" class="primary-btn">Save Memo</button>
+      <div id="status-msg"></div>
+    </main>
+
+    <!-- My List Section -->
+    <main id="view-list" class="hidden">
+      <div class="controls">
+        <select id="filter-category">
+          <option value="All">All Categories</option>
+        </select>
+        <select id="sort-order">
+          <option value="date-desc">Newest First</option>
+          <option value="date-asc">Oldest First</option>
+          <option value="category">Category</option>
+        </select>
+      </div>
+      <ul id="memo-list">
+        <!-- List items will be populated here -->
+      </ul>
+      <div id="empty-state" class="hidden">No memos found.</div>
+    </main>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

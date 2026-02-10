@@ -1,0 +1,17 @@
+{
+    "manifest_version": 3,
+    "name": "YouTube Memo",
+    "version": "1.0",
+    "description": "Save YouTube videos with memos and categories.",
+    "permissions": [
+        "activeTab",
+        "storage",
+        "scripting"
+    ],
+    "host_permissions": [
+        "*://www.youtube.com/*"
+    ],
+    "action": {
+        "default_popup": "popup.html"
+    }
+}
