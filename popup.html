@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YouTube Memo</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div class="container">
     <header>
@@ -22,7 +24,7 @@
         <h2 id="video-title">Loading title...</h2>
         <div class="url-display" id="video-url"></div>
       </div>
-      
+
       <div class="form-group">
         <label for="category-select">Category</label>
         <div class="row">
@@ -55,11 +57,9 @@
         <select id="filter-category">
           <option value="All">All Categories</option>
         </select>
-        <select id="sort-order">
-          <option value="date-desc">Newest First</option>
-          <option value="date-asc">Oldest First</option>
-          <option value="category">Category</option>
-        </select>
+        <button id="btn-keep-history" class="keep-btn-small" title="View Keep History">History</button>
+        <button id="btn-sync-reset" class="keep-btn-small primary" title="Sync Today's List to Keep & Reset">Sync &
+          Reset</button>
       </div>
       <ul id="memo-list">
         <!-- List items will be populated here -->
@@ -69,4 +69,5 @@
   </div>
   <script src="popup.js"></script>
 </body>
+
 </html>

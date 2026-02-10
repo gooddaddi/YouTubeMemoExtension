@@ -18,9 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusMsg = document.getElementById('status-msg');
 
     const filterCategory = document.getElementById('filter-category');
-    const sortOrder = document.getElementById('sort-order');
     const memoList = document.getElementById('memo-list');
     const emptyState = document.getElementById('empty-state');
+    const btnSyncReset = document.getElementById('btn-sync-reset');
+    const btnKeepHistory = document.getElementById('btn-keep-history');
 
     // State
     let currentVideo = null;
@@ -29,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialization
     loadCategories();
     getCurrentTab();
+    checkDailyReset();
 
     // Tab Switching
     tabAdd.addEventListener('click', () => {
@@ -52,6 +54,101 @@ document.addEventListener('DOMContentLoaded', () => {
             viewList.classList.remove('hidden');
             viewAdd.classList.add('hidden');
         }
+    }
+
+    // --- Daily Reset Logic ---
+    function checkDailyReset() {
+        const today = new Date().toLocaleDateString();
+        chrome.storage.local.get(['lastResetDate', 'memos'], (result) => {
+            const lastReset = result.lastResetDate;
+            const memos = result.memos || [];
+
+            if (lastReset && lastReset !== today && memos.length > 0) {
+                // It's a new day and there are old memos
+                btnSyncReset.classList.add('pulse'); // Visual hint
+                btnSyncReset.title = "New day detected! Sync and clear your list.";
+            } else if (!lastReset) {
+                chrome.storage.local.set({ lastResetDate: today });
+            }
+        });
+    }
+
+    // --- Google Keep Sync Logic ---
+    btnKeepHistory.addEventListener('click', () => {
+        const keepSearchUrl = "https://keep.google.com/#search/text=YouTube%20Memo";
+        window.open(keepSearchUrl, '_blank');
+    });
+
+    btnSyncReset.addEventListener('click', () => {
+        chrome.storage.local.get(['memos'], (result) => {
+            const memos = result.memos || [];
+            if (memos.length === 0) {
+                alert("No memos to sync!");
+                return;
+            }
+
+            const today = new Date().toLocaleDateString();
+            let keepText = `📅 [YouTube Backup] - ${today}\n\n`;
+
+            // Group by category
+            const categoriesInMemos = [...new Set(memos.map(m => m.category))];
+            let categoryHashtags = "";
+
+            categoriesInMemos.forEach(cat => {
+                keepText += `📁 [[ ${cat} ]]\n`;
+                memos.filter(m => m.category === cat).forEach(m => {
+                    keepText += `• ${m.title}\n  🔗 ${m.url}\n`;
+                    if (m.memo) keepText += `  📝 메모: ${m.memo}\n`;
+                });
+                keepText += `\n`;
+
+                // hashtag generation (removing spaces)
+                categoryHashtags += ` #${cat.replace(/\s+/g, '')}`;
+            });
+
+            // Global hashtags
+            keepText += `---\n#데일리체크리스트 #YouTubeMemo${categoryHashtags}`;
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(keepText).then(() => {
+                showSyncGuide(today);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                alert("Failed to copy list to clipboard.");
+            });
+        });
+    });
+
+    function showSyncGuide(date) {
+        const guide = document.createElement('div');
+        guide.id = 'sync-guide';
+        guide.innerHTML = `
+            <div class="guide-content">
+                <span class="guide-icon">📋</span>
+                <h3>복사 완료!</h3>
+                <p>오늘의 리스트가 클립보드에<br>정갈하게 정리되었습니다.</p>
+                <div class="guide-steps">
+                    <div class="guide-step"><span>1.</span> <span>잠시 후 열리는 구글 킵에서 <b>'새 메모'</b>를 만드세요.</span></div>
+                    <div class="guide-step"><span>2.</span> <span><b>Ctrl + V</b>로 내용을 붙여넣으세요.</span></div>
+                    <div class="guide-step"><span>3.</span> <span>하단의 해시태그를 확인하고 라벨로 변환하세요!</span></div>
+                </div>
+                <button id="btn-guide-confirm" class="btn-confirm">알겠습니다. 초기화할게요!</button>
+            </div>
+        `;
+        document.body.appendChild(guide);
+
+        document.getElementById('btn-guide-confirm').addEventListener('click', () => {
+            chrome.storage.local.set({
+                memos: [],
+                lastResetDate: date
+            }, () => {
+                const keepUrl = "https://keep.google.com/";
+                window.open(keepUrl, '_blank');
+                loadMemos();
+                btnSyncReset.classList.remove('pulse');
+                guide.remove();
+            });
+        });
     }
 
     // --- Add Memo Section Logic ---
@@ -187,23 +284,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderMemos(memos) {
         const filterVal = filterCategory.value;
-        const sortVal = sortOrder.value;
-
         // 1. Filter
         let filtered = memos.filter(m => {
             return filterVal === 'All' || m.category === filterVal;
-        });
-
-        // 2. Sort
-        filtered.sort((a, b) => {
-            if (sortVal === 'date-desc') {
-                return b.timestamp - a.timestamp;
-            } else if (sortVal === 'date-asc') {
-                return a.timestamp - b.timestamp;
-            } else if (sortVal === 'category') {
-                return a.category.localeCompare(b.category);
-            }
-            return 0;
         });
 
         // 3. Render
@@ -272,6 +355,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // List Controls Change Events
     filterCategory.addEventListener('change', loadMemos);
-    sortOrder.addEventListener('change', loadMemos);
 
 });
